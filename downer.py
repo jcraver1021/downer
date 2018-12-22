@@ -8,6 +8,8 @@ INTERVALS = [2, 3, 5, 8]
 """INTERVALS (list): list of ints representing a choice of seconds to wait between requests"""
 FILTER = True
 """FILTER (boolean): whether to filter out destination files that already exists (without even making the request to download)"""
+AFILE = 'agents.txt'
+"""AFILE (string): filename containing default list of user agent choices"""
 
 # Since you can't raise in a lambda
 def _raise_value(msg):
@@ -22,7 +24,7 @@ def _load_file_as_list(filename):
 _agent_ldr_ = {
 	'from-list': (lambda h: h['agent-list'] if 'agent-list' in h else _raise_value('agent-list required if from-list is used for use-agent')),
 	'from-file': (lambda h: _load_file_as_list(h['agent-file']) if 'agents-file' in h else _raise_value('agent-file required if from-file is used for use-agent')),
-	'default': (lambda h: _load_file_as_list('agents.txt')),
+	'default': (lambda h: _load_file_as_list(AFILE)),
 }
 
 def download(pairs, **kwargs):
