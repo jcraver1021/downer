@@ -20,10 +20,10 @@ def _load_file_as_list(filename):
 	with open(filename, 'r') as strings_file:
 		return [line for line in strings_file]
 
-# This is a "switch statement" of behaviors for the use-agent setting
+# This is a "switch statement" of behaviors for the agent setting
 _agent_ldr_ = {
-	'from-list': (lambda h: h['agent-list'] if 'agent-list' in h else _raise_value('agent-list required if from-list is used for use-agent')),
-	'from-file': (lambda h: _load_file_as_list(h['agent-file']) if 'agents-file' in h else _raise_value('agent-file required if from-file is used for use-agent')),
+	'list': (lambda h: h['list'] if 'list' in h else _raise_value("'list' option required if list is used for agent")),
+	'file': (lambda h: _load_file_as_list(h['file']) if 'agents-file' in h else _raise_value("'file' option required if file is used for agent")),
 	'default': (lambda h: _load_file_as_list(AFILE)),
 }
 
@@ -33,11 +33,11 @@ def download(pairs, **kwargs):
 	Inputs:
 		pairs:		List of (string, string) pairs representing source URL to be downloaded and destination filename to put it
 		options:
-			use-agent:	user-agent to claim in the header file
+			agent:	user-agent to claim in the header file
 				None -		the default requests user-agent will be used
-				from-list -	choose from the list of agents provided in agent-list
-				from-file - choose from the list of agents found in the file agent-file
-				default - 	equivalent to from-file with agent-file = "agents.txt"
+				list -	choose from the list of agents provided in list
+				file - choose from the list of agents found in the file file
+				default - 	equivalent to file with file = "agents.txt"
 			filter:		whether to filter out existing files (default true)
 			intervals:	list of numbers of seconds from which to sample wait times between requests (default [2, 3, 5, 8])
 			headers:	map of headers to use in the requests (default {})
@@ -48,11 +48,11 @@ def download(pairs, **kwargs):
 	settings = {}
 	
 	# Apply settings
-	if 'use-agent' in kwargs:
-		# Options are 'from-list', 'from-file', and 'default' (equivalent to 'from-file' with 'agent-file' equal to 'agents.txt')
-		# 'from-list' requires 'agent-list' argument
-		# 'from-file' requires 'agent-file' argument
-		settings['agents'] = _agent_ldr_.get(kwargs['use-agent'], (lambda h: _raise_value("'%s' not a valid value for 'use-agent'" % h['use-agent'])))(kwargs)
+	if 'agent' in kwargs:
+		# Options are 'list', 'file', and 'default' (equivalent to 'file' with 'file' equal to 'agents.txt')
+		# 'list' requires 'list' argument
+		# 'file' requires 'file' argument
+		settings['agents'] = _agent_ldr_.get(kwargs['agent'], (lambda h: _raise_value("'%s' not a valid value for 'agent'" % h['agent'])))(kwargs)
 	settings['filter'] = kwargs.get('filter', FILTER)
 	settings['intervals'] = kwargs.get('intervals', INTERVALS)
 	headers = kwargs.get('headers', {})
