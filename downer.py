@@ -18,7 +18,7 @@ def _raise_value(msg):
 # Interpret a file as a list of strings
 def _load_file_as_list(filename):
 	with open(filename, 'r') as strings_file:
-		return [line for line in strings_file]
+		return [line.strip() for line in strings_file]
 
 # This is a "switch statement" of behaviors for the agent setting
 _agent_ldr_ = {
