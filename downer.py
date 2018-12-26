@@ -10,6 +10,8 @@ FILTER = True
 """FILTER (boolean): whether to filter out destination files that already exists (without even making the request to download)"""
 AFILE = 'agents.txt'
 """AFILE (string): filename containing default list of user agent choices"""
+CLOSE = True
+"""CLOSE (boolean): whether to tell server to close connection after download (equivalent to adding it into header map)"""
 
 # Since you can't raise in a lambda
 def _raise_value(msg):
@@ -35,11 +37,12 @@ def download(pairs, **kwargs):
 		options:
 			agent:	user-agent to claim in the header file
 				None -		the default requests user-agent will be used
-				list -	choose from the list of agents provided in list
-				file - choose from the list of agents found in the file file
+				list -		choose from the list of agents provided in list
+				file -		choose from the list of agents found in the file file
 				default - 	equivalent to file with file = "agents.txt"
 			filter:		whether to filter out existing files (default true)
 			intervals:	list of numbers of seconds from which to sample wait times between requests (default [2, 3, 5, 8])
+			close:		whether to close connection after download (equivalent to adding it to header map)
 			headers:	map of headers to use in the requests (default {})
 	Output:
 		None
@@ -55,7 +58,10 @@ def download(pairs, **kwargs):
 		settings['agents'] = _agent_ldr_.get(kwargs['agent'], (lambda h: _raise_value("'%s' not a valid value for 'agent'" % h['agent'])))(kwargs)
 	settings['filter'] = kwargs.get('filter', FILTER)
 	settings['intervals'] = kwargs.get('intervals', INTERVALS)
+	settings['close'] = kwargs.get('close', CLOSE)
 	headers = kwargs.get('headers', {})
+	if settings['close']:
+		headers['Connection'] = 'close'
 	
 	# Download each URL in the list
 	for url, filename in pairs:
