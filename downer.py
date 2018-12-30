@@ -1,14 +1,14 @@
 import time
 import random
 import requests
-from os.path import exists
+from os.path import exists, join, dirname
 
 # Settings
 INTERVALS = [2, 3, 5, 8]
 """INTERVALS (list): list of ints representing a choice of seconds to wait between requests"""
 FILTER = True
 """FILTER (boolean): whether to filter out destination files that already exists (without even making the request to download)"""
-AFILE = 'agents.txt'
+AFILE = join(dirname(__file__), 'agents.txt')
 """AFILE (string): filename containing default list of user agent choices"""
 CLOSE = True
 """CLOSE (boolean): whether to tell server to close connection after download (equivalent to adding it into header map)"""
